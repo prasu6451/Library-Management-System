@@ -6,7 +6,7 @@ const BookCard = ({ book }) => {
   const isAvailable = available_quantity > 0;
 
   return (
-    <div className="glass-card rounded-xl p-5 flex flex-col justify-between h-full border border-slate-800 text-left">
+    <div className="glass-card rounded-xl p-5 flex flex-col justify-between h-full border border-slate-800 text-left group">
       <div>
         {/* Category & Status */}
         <div className="flex items-center justify-between mb-4">

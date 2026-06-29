@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, UserCheck, AlertTriangle, Info, BookOpen, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, AlertTriangle, BookOpen, ArrowLeft } from 'lucide-react';
 
-const Login = () => {
-  const { login, isAuthenticated, user, loading: authLoading } = useAuth();
+const Register = () => {
+  const { register, isAuthenticated, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Student'); // Student or Librarian
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [expiredMsg, setExpiredMsg] = useState(false);
 
   useEffect(() => {
     // If user is already authenticated, redirect to appropriate dashboard
@@ -26,30 +25,30 @@ const Login = () => {
     }
   }, [isAuthenticated, user, navigate]);
 
-  useEffect(() => {
-    // Parse query params
-    const roleParam = searchParams.get('role');
-    if (roleParam === 'Student' || roleParam === 'Librarian') {
-      setRole(roleParam);
-    }
-    if (searchParams.get('expired')) {
-      setExpiredMsg(true);
-    }
-  }, [searchParams]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
+    const trimmedName = name.trim();
     const trimmedEmail = email.trim().toLowerCase();
-    
-    if (!trimmedEmail || !password) {
-      setError('Please fill in both email and password.');
+
+    if (!trimmedName || !trimmedEmail || !password || !confirmPassword) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
       return;
     }
 
     setSubmitting(true);
-    const result = await login(trimmedEmail, password, role);
+    const result = await register(trimmedName, trimmedEmail, password);
     setSubmitting(false);
 
     if (!result.success) {
@@ -71,21 +70,13 @@ const Login = () => {
         </Link>
 
         {/* Decorative branding header inside card */}
-        <div className="flex flex-col items-center mb-8 text-center">
+        <div className="flex flex-col items-center mb-6 text-center">
           <div className="bg-gradient-to-tr from-indigo-500 to-purple-600 p-3 rounded-xl text-white shadow-lg shadow-indigo-500/20 mb-3">
             <BookOpen className="h-6 w-6" />
           </div>
-          <h2 className="text-2xl font-extrabold text-slate-100">Welcome Back</h2>
-          <p className="text-sm text-slate-400 mt-1">Sign in to manage your library resources</p>
+          <h2 className="text-2xl font-extrabold text-slate-100">Create Account</h2>
+          <p className="text-sm text-slate-400 mt-1">Register as a student to explore our library</p>
         </div>
-
-        {/* Alerts */}
-        {expiredMsg && (
-          <div className="mb-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm flex gap-3">
-            <Info className="h-5 w-5 flex-shrink-0" />
-            <span>Your session has expired. Please log in again.</span>
-          </div>
-        )}
 
         {error && (
           <div className="mb-6 p-4 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm flex gap-3">
@@ -94,38 +85,28 @@ const Login = () => {
           </div>
         )}
 
-        {/* Tab Role Selector */}
-        <div className="text-left mb-2">
-          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Select Portal
-          </label>
-        </div>
-        <div className="grid grid-cols-2 bg-slate-900/80 p-1 rounded-lg mb-6 border border-slate-800">
-          <button
-            type="button"
-            onClick={() => { setRole('Student'); setError(''); }}
-            className={`py-2 rounded-md text-sm font-semibold transition-all ${
-              role === 'Student'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Student Portal
-          </button>
-          <button
-            type="button"
-            onClick={() => { setRole('Librarian'); setError(''); }}
-            className={`py-2 rounded-md text-sm font-semibold transition-all ${
-              role === 'Librarian'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Librarian Portal
-          </button>
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
+          {/* Full Name input */}
+          <div className="text-left">
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              Full Name
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <User className="h-4.5 w-4.5" />
+              </div>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+                autoComplete="off"
+                className="block w-full pl-10 pr-3 py-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+              />
+            </div>
+          </div>
+
           {/* Email input */}
           <div className="text-left">
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
@@ -161,7 +142,28 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
+                placeholder="Create password"
+                autoComplete="new-password"
+                className="block w-full pl-10 pr-3 py-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Confirm Password input */}
+          <div className="text-left">
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <Lock className="h-4.5 w-4.5" />
+              </div>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your password"
                 autoComplete="new-password"
                 className="block w-full pl-10 pr-3 py-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
               />
@@ -172,31 +174,32 @@ const Login = () => {
           <button
             type="submit"
             disabled={submitting || authLoading}
-            className="w-full gradient-btn py-3.5 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold disabled:opacity-50"
+            className="w-full gradient-btn py-3.5 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold disabled:opacity-50 mt-2"
           >
             {submitting ? (
               <div className="h-5 w-5 border-2 border-white rounded-full animate-spin border-t-transparent"></div>
             ) : (
               <>
-                <UserCheck className="h-4.5 w-4.5" />
-                {role ? `Sign In as ${role}` : 'Sign In'}
+                <UserPlus className="h-4.5 w-4.5" />
+                Register as Student
               </>
             )}
           </button>
         </form>
 
-        {/* Register Link */}
-        <div className="mt-6 text-center text-xs text-slate-400 font-semibold">
-          New Student?{' '}
-          <Link to="/register" className="text-indigo-400 hover:text-indigo-300 hover:underline">
-            Register here
-          </Link>
+        {/* Link to login */}
+        <div className="mt-6 pt-4 border-t border-slate-800 text-center">
+          <p className="text-xs text-slate-400 font-semibold">
+            Already have an account?{' '}
+            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 hover:underline">
+              Sign In
+            </Link>
+          </p>
         </div>
-
 
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;

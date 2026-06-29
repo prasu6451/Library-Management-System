@@ -7,6 +7,13 @@ import { BookOpen, AlertCircle, History, Search, Filter, Calendar, CornerDownRig
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+
+  const formatDisplayDate = (dateString) => {
+    if (!dateString) return '—';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '—';
+    return date.toLocaleDateString();
+  };
   
   // Dashboard states
   const [stats, setStats] = useState({ activeBorrows: 0, overdueCount: 0, historyCount: 0 });
@@ -86,18 +93,29 @@ const StudentDashboard = () => {
 
   return (
     <div className="space-y-10 animate-fade-in text-left">
-      {/* Welcome Card */}
-      <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight">
-            Welcome back, <span className="gradient-text">{user?.name}</span>!
-          </h2>
-          <p className="text-slate-400 text-sm mt-1 sm:mt-2">
-            Explore new releases, search the database, and monitor active book loans.
-          </p>
-        </div>
-        <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold rounded-lg uppercase tracking-wider">
-          Student Account
+      {/* Welcome Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/60 p-8 sm:p-10 shadow-2xl backdrop-blur-md">
+        {/* Glow Effects */}
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[140%] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[120%] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4">
+              <BookOpen className="h-3.5 w-3.5" />
+              Student Academic Catalog
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
+              Welcome Back, <span className="gradient-text">{user?.name}</span>!
+            </h2>
+            <p className="text-slate-400 text-sm mt-2 max-w-xl leading-relaxed">
+              Athena catalog gives you access to a rich collection of volumes. Research subjects, check catalog availability, and monitor checkout logs.
+            </p>
+          </div>
+          
+          <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold rounded-lg uppercase tracking-wider self-start sm:self-auto shadow-md">
+            Student Account
+          </div>
         </div>
       </div>
 
@@ -171,7 +189,7 @@ const StudentDashboard = () => {
                             Due Date:
                           </span>
                           <span className={isOverdue ? 'text-rose-400 font-semibold' : 'text-slate-300'}>
-                            {new Date(loan.due_date).toLocaleDateString()}
+                            {formatDisplayDate(loan.due_date)}
                           </span>
                         </div>
                         

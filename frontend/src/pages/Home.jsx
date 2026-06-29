@@ -33,30 +33,34 @@ const Home = () => {
 
         {/* Action Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            to={getDashboardPath()}
-            className="w-full sm:w-auto gradient-btn px-8 py-3.5 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:shadow-indigo-500/30"
-          >
-            Access Portal
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          {!isAuthenticated && (
-            <div className="flex w-full sm:w-auto items-center justify-center gap-2 sm:gap-4">
+          {isAuthenticated ? (
+            <Link
+              to={getDashboardPath()}
+              className="w-full sm:w-auto gradient-btn px-8 py-3.5 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:shadow-indigo-500/30"
+            >
+              Access Dashboard
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <>
               <Link
-                to="/login?role=Student"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-lg text-sm font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white transition-all"
+                to="/register"
+                className="w-full sm:w-auto gradient-btn px-8 py-3.5 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:shadow-indigo-500/30"
               >
-                Demo Student
+                Register as Student
+                <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                to="/login?role=Librarian"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-lg text-sm font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white transition-all"
+                to="/login"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-lg text-sm font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white transition-all"
               >
-                Demo Librarian
+                Sign In
               </Link>
-            </div>
+            </>
           )}
         </div>
+
+
       </div>
 
       {/* Feature Cards Grid */}

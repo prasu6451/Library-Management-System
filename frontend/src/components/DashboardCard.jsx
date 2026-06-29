@@ -16,6 +16,20 @@ const DashboardCard = ({ title, value, icon: Icon, color = 'indigo' }) => {
       shadow: 'shadow-emerald-500/5',
       accent: 'from-emerald-500 to-teal-500'
     },
+    teal: {
+      bg: 'bg-teal-500/10',
+      text: 'text-teal-400',
+      border: 'border-teal-500/20',
+      shadow: 'shadow-teal-500/5',
+      accent: 'from-teal-500 to-emerald-500'
+    },
+    cyan: {
+      bg: 'bg-cyan-500/10',
+      text: 'text-cyan-400',
+      border: 'border-cyan-500/20',
+      shadow: 'shadow-cyan-500/5',
+      accent: 'from-cyan-500 to-sky-500'
+    },
     rose: {
       bg: 'bg-rose-500/10',
       text: 'text-rose-400',

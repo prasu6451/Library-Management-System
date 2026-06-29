@@ -17,7 +17,7 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   const linkClass = (path) =>
-    `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+    `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-95 ${
       isActive(path)
         ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
         : 'text-slate-300 hover:bg-slate-800 hover:text-white border border-transparent'
@@ -96,12 +96,20 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <Link
-              to="/login"
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all duration-300 transform hover:-translate-y-0.5"
-            >
-              Sign In
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/register"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-all duration-300"
+              >
+                Register
+              </Link>
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all duration-300 transform hover:-translate-y-0.5"
+              >
+                Sign In
+              </Link>
+            </div>
           )}
         </div>
 
@@ -117,78 +125,99 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && isAuthenticated && (
+      {mobileMenuOpen && (
         <div className="md:hidden border-t border-slate-800/80 bg-slate-900/95 py-3 px-2 space-y-1 animate-fade-in">
-          {user.role === 'Librarian' ? (
+          {isAuthenticated ? (
             <>
-              <Link
-                to="/librarian-dashboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className={mobileLinkClass('/librarian-dashboard')}
-              >
-                <LayoutDashboard className="h-5 w-5" />
-                Dashboard
-              </Link>
-              <Link
-                to="/manage-books"
-                onClick={() => setMobileMenuOpen(false)}
-                className={mobileLinkClass('/manage-books')}
-              >
-                <Database className="h-5 w-5" />
-                Manage Books
-              </Link>
-              <Link
-                to="/issue-books"
-                onClick={() => setMobileMenuOpen(false)}
-                className={mobileLinkClass('/issue-books')}
-              >
-                <BookMarked className="h-5 w-5" />
-                Issue Records
-              </Link>
+              {user.role === 'Librarian' ? (
+                <>
+                  <Link
+                    to="/librarian-dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileLinkClass('/librarian-dashboard')}
+                  >
+                    <LayoutDashboard className="h-5 w-5" />
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/manage-books"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileLinkClass('/manage-books')}
+                  >
+                    <Database className="h-5 w-5" />
+                    Manage Books
+                  </Link>
+                  <Link
+                    to="/issue-books"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileLinkClass('/issue-books')}
+                  >
+                    <BookMarked className="h-5 w-5" />
+                    Issue Records
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/student-dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileLinkClass('/student-dashboard')}
+                  >
+                    <LayoutDashboard className="h-5 w-5" />
+                    My Dashboard
+                  </Link>
+                  <Link
+                    to="/books"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileLinkClass('/books')}
+                  >
+                    <BookOpen className="h-5 w-5" />
+                    Catalog
+                  </Link>
+                </>
+              )}
+
+              {/* User details for mobile */}
+              <div className="pt-4 mt-4 border-t border-slate-800/80 px-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-indigo-400">
+                    <User className="h-5 w-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-slate-100">{user.name}</span>
+                    <span className="text-xs text-indigo-400 font-medium">{user.role}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="flex items-center gap-1.5 py-2 text-sm font-medium text-rose-400 hover:text-rose-300"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              </div>
             </>
           ) : (
-            <>
+            <div className="py-2 px-4 space-y-2.5">
               <Link
-                to="/student-dashboard"
+                to="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className={mobileLinkClass('/student-dashboard')}
+                className="block text-center w-full px-4 py-2.5 rounded-lg text-sm font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition-all duration-200"
               >
-                <LayoutDashboard className="h-5 w-5" />
-                My Dashboard
+                Register
               </Link>
               <Link
-                to="/books"
+                to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className={mobileLinkClass('/books')}
+                className="block text-center w-full px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/20 transition-all duration-200"
               >
-                <BookOpen className="h-5 w-5" />
-                Catalog
+                Sign In
               </Link>
-            </>
-          )}
-
-          {/* User details for mobile */}
-          <div className="pt-4 mt-4 border-t border-slate-800/80 px-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-indigo-400">
-                <User className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-slate-100">{user.name}</span>
-                <span className="text-xs text-indigo-400 font-medium">{user.role}</span>
-              </div>
             </div>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                handleLogout();
-              }}
-              className="flex items-center gap-1.5 py-2 text-sm font-medium text-rose-400 hover:text-rose-300"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
-          </div>
+          )}
         </div>
       )}
     </nav>

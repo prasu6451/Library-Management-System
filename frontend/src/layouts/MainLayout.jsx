@@ -13,11 +13,11 @@ const MainLayout = ({ children }) => {
 
       <Navbar />
       
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 z-10">
+      <main className="relative flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 z-10">
         {children}
       </main>
 
-      <footer className="border-t border-slate-900/80 bg-slate-950 py-6 text-center text-sm text-slate-500 z-10">
+      <footer className="border-t border-slate-900/80 bg-slate-950 py-6 text-center text-sm text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© {new Date().getFullYear()} Athena Library Management System. All rights reserved.</p>
           <div className="flex gap-4">
